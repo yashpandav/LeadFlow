@@ -1,6 +1,7 @@
 const Customer = require('../models/customer');
 const Lead = require('../models/lead');
 const yup = require('yup');
+const mongoose = require('mongoose');
 
 // customer schema
 const customerSchema = yup.object().shape({
@@ -37,7 +38,32 @@ exports.addCustomer = async (req, res) => {
 // get all customers for the logged-in user
 exports.getCustomers = async (req, res) => {
   try {
-    const customers = await Customer.find({ ownerId: req.user.id });
+    const customers = await Customer.aggregate([
+      {
+        $match: {
+          ownerId: new mongoose.Types.ObjectId(req.user.id),
+        },
+      },
+      {
+        $lookup: {
+          from: 'leads',
+          localField: '_id',
+          foreignField: 'customerId',
+          as: 'leads',
+        },
+      },
+      {
+        $addFields: {
+          totalLeads: { $size: '$leads' },
+        },
+      },
+      {
+        $project: {
+          leads: 0,
+        },
+      },
+    ]);
+
     res.status(200).json({ success: true, data: customers });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });

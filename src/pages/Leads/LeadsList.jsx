@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import LeadForm from './LeadForm';
 import LeadCard from '../../components/ui/LeadCard';
 import Pagination from '../../components/ui/Pagination';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 const LeadsList = () => {
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const LeadsList = () => {
     .filter((lead) => statusFilter === 'all' || lead.status === statusFilter);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner message="Searching for leads..." />;
   }
 
   if (error) {

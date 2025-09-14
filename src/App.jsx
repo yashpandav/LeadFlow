@@ -12,6 +12,7 @@ import LeadDetail from './pages/Leads/LeadDetail';
 import Reports from './pages/Reports/Reports';
 import Layout from './components/Layout';
 import PrivateRoute from './components/PrivateRoute';
+import NotFound from './pages/NotFound';
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
             path="/reports"
             element={<PrivateRoute><Layout><Reports /></Layout></PrivateRoute>}
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </ApiProvider>

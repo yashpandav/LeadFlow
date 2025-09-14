@@ -3,17 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { IconMail, IconLock } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import { useApi } from '../../contexts/ApiContext';
+import { toast } from 'sonner';
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const api = useApi();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     const formData = new FormData(e.target);
     const email = formData.get('email');
@@ -21,9 +20,10 @@ const Login = () => {
 
     try {
       await api.login(email, password);
+      toast.success('Login successful!');
       navigate('/');
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,6 @@ const Login = () => {
             <h2 className="text-3xl font-bold text-foreground">Welcome Back</h2>
             <p className="text-muted-foreground">Sign in to continue</p>
         </div>
-        {error && <div className="p-4 text-white bg-red-500 rounded-md">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-6">
             <div>
                 <label className="text-sm font-bold text-muted-foreground" htmlFor="email">Email Address</label>
@@ -70,15 +69,6 @@ const Login = () => {
                         placeholder="••••••••"
                         className="w-full px-4 py-2 pl-10 text-foreground bg-transparent border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                     />
-                </div>
-            </div>
-            <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox" className="w-4 h-4 rounded text-primary focus:ring-primary" />
-                    <label htmlFor="remember-me" className="ml-2 block text-sm text-muted-foreground"> Remember me </label>
-                </div>
-                <div className="text-sm">
-                    <Link to="#" className="font-medium text-primary hover:underline"> Forgot password? </Link>
                 </div>
             </div>
             <button

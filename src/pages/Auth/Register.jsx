@@ -3,17 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { IconMail, IconLock, IconUser } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import { useApi } from '../../contexts/ApiContext';
+import { toast } from 'sonner';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const api = useApi();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
 
     const formData = new FormData(e.target);
     const name = formData.get('name');
@@ -22,9 +21,10 @@ const Register = () => {
 
     try {
       await api.register(name, email, password);
+      toast.success('Account created successfully!');
       navigate('/login');
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -41,7 +41,6 @@ const Register = () => {
           <h2 className="text-3xl font-bold text-foreground">Create an Account</h2>
           <p className="text-muted-foreground">Get started with your new account</p>
         </div>
-        {error && <div className="p-4 text-white bg-red-500 rounded-md">{error}</div>}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="text-sm font-bold text-muted-foreground" htmlFor="name">Name</label>

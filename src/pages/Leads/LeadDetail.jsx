@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 const LeadDetail = () => {
   const { id } = useParams();
@@ -50,7 +51,7 @@ const LeadDetail = () => {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    return <LoadingSpinner message="Loading lead details..." />;
   }
 
   if (error) {

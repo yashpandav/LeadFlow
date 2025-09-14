@@ -5,7 +5,7 @@ export const fetchDashboardStats = createAsyncThunk(
   'dashboard/fetchStats',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get('/dashboard/stats');
+      const response = await api.get('/dashboard');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -19,10 +19,13 @@ const dashboardSlice = createSlice({
     stats: {
       totalCustomers: 0,
       totalLeads: 0,
-      newCustomers: 0,
-      newLeads: 0,
       convertedLeads: 0,
+      newCustomers: 0,
+      leadConversionRate: 0,
+      recentLeads: [],
       leadsByStatus: [],
+      topCustomers: [],
+      leadsOverTime: [],
     },
     loading: false,
     error: null,
