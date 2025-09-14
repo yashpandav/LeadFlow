@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react';
 const ApiContext = createContext();
 
 export const ApiProvider = ({ children }) => {
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const api = {
     login: async (email, password) => {
