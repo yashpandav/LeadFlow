@@ -22,6 +22,12 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
 
+const EmptyChart = () => (
+    <div className="flex items-center justify-center h-full">
+      <p className="text-gray-500">No data to display</p>
+    </div>
+  );
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { stats, loading, error } = useSelector((state) => state.dashboard);
@@ -90,15 +96,19 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie data={stats.leadsByStatus} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={150} fill="#8884d8" label>
-                  {stats.leadsByStatus.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
+              {stats.leadsByStatus.length > 0 ? (
+                <PieChart>
+                  <Pie data={stats.leadsByStatus} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={150} fill="#8884d8" label>
+                    {stats.leadsByStatus.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              ) : (
+                <EmptyChart />
+              )}
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -108,14 +118,18 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={stats.topCustomers} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="name" width={100} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="value" fill="#8884d8" name="Number of Leads" />
-              </BarChart>
+              {stats.topCustomers.length > 0 ? (
+                <BarChart data={stats.topCustomers} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis type="category" dataKey="name" width={100} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value" fill="#8884d8" name="Number of Leads" />
+                </BarChart>
+              ) : (
+                <EmptyChart />
+              )}
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -127,14 +141,18 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={stats.leadsOverTime}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="count" stroke="#8884d8" name="Leads" />
-              </LineChart>
+              {stats.leadsOverTime.length > 0 ? (
+                <LineChart data={stats.leadsOverTime}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="count" stroke="#8884d8" name="Leads" />
+                </LineChart>
+              ) : (
+                <EmptyChart />
+              )}
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -145,24 +163,28 @@ const Dashboard = () => {
             <CardTitle>Recent Leads</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {stats.recentLeads.map((lead) => (
-                  <TableRow key={lead._id}>
-                    <TableCell>{lead.title}</TableCell>
-                    <TableCell>{lead.customerId.name}</TableCell>
-                    <TableCell>{lead.status}</TableCell>
+            {stats.recentLeads.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {stats.recentLeads.map((lead) => (
+                    <TableRow key={lead._id}>
+                      <TableCell>{lead.title}</TableCell>
+                      <TableCell>{lead.customerId.name}</TableCell>
+                      <TableCell>{lead.status}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-gray-500">No recent leads</p>
+            )}
           </CardContent>
         </Card>
       </div>
