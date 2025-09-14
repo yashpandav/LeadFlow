@@ -231,6 +231,43 @@ This project follows a **full-stack React + Node.js architecture** with:
 - **Context API** for global application state
 - **Middleware pattern** for authentication and authorization
 
+## Schema
+
+```
+erDiagram
+    User {
+        ObjectId _id PK
+        String name
+        String email UK
+        String password
+        String role
+        Date createdAt
+        Date updatedAt
+    }
+    
+    Customer {
+        ObjectId _id PK
+        String name
+        String email UK
+        String phone
+        String company
+        ObjectId ownerId FK
+        Date createdAt
+    }
+    
+    Lead {
+        ObjectId _id PK
+        ObjectId customerId FK
+        String title
+        String description
+        String status
+        Number value
+        Date createdAt
+    }
+    
+    User ||--o{ Customer : owns
+    Customer ||--o{ Lead : generates
+```
 
 # ⚙️ Project Setup
 
