@@ -90,6 +90,7 @@ exports.login = async (req, res) => {
       success: true,
       token,
       user: userResponse,
+      message: 'Login successful',
     });
   } catch (error) {
     if (error.name === 'ValidationError') {

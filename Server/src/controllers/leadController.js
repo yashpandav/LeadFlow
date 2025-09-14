@@ -5,7 +5,7 @@ const yup = require('yup');
 const leadSchema = yup.object().shape({
   title: yup.string().required(),
   description: yup.string(),
-  status: yup.string().oneOf(['New', 'Contacted', 'Qualified', 'Proposal', 'Converted', 'Lost']),
+  status: yup.string().oneOf(['New', 'Contacted', 'Converted', 'Lost']),
   value: yup.number(),
   customerId: yup.string().required(),
 });
@@ -13,7 +13,7 @@ const leadSchema = yup.object().shape({
 const updateLeadSchema = yup.object().shape({
   title: yup.string(),
   description: yup.string(),
-  status: yup.string().oneOf(['New', 'Contacted', 'Qualified', 'Proposal', 'Converted', 'Lost']),
+  status: yup.string().oneOf(['New', 'Contacted', 'Converted', 'Lost']),
   value: yup.number(),
 });
 
@@ -47,7 +47,7 @@ exports.addLead = async (req, res) => {
     const populatedLead = await Lead.findById(lead._id).populate('customerId', 'name');
 
 
-    res.status(201).json({ success: true, data: populatedLead });
+    res.status(201).json({ success: true, data: populatedLead, message: 'Lead added successfully' });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -69,7 +69,7 @@ exports.getLeads = async (req, res) => {
         .json({ success: false, message: 'Customer not found or user not authorized' });
     }
 
-    const leads = await Lead.find({ customerId });
+    const leads = await Lead.find({ customerId }).populate('customerId', 'name');
     res.status(200).json({ success: true, data: leads });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -121,7 +121,7 @@ exports.updateLead = async (req, res) => {
 
     const populatedLead = await Lead.findById(lead._id).populate('customerId', 'name');
 
-    res.status(200).json({ success: true, data: populatedLead });
+    res.status(200).json({ success: true, data: populatedLead, message: 'Lead updated successfully' });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -138,7 +138,7 @@ exports.deleteLead = async (req, res) => {
     
     await lead.remove();
 
-    res.status(200).json({ success: true, data: {} });
+    res.status(200).json({ success: true, data: {}, message: 'Lead deleted successfully' });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }

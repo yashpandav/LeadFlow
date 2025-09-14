@@ -21,6 +21,8 @@ import { updateLead } from "../../store/features/leads/leadSlice";
 const statusColors = {
   New: "bg-blue-500",
   Contacted: "bg-yellow-500",
+  Qualified: "bg-green-500",
+  Proposal: "bg-purple-500",
   Converted: "bg-teal-500",
   Lost: "bg-red-500",
 };
@@ -80,6 +82,8 @@ const LeadCard = ({ lead, onEdit, onDelete }) => {
             <SelectContent>
               <SelectItem value="New">New</SelectItem>
               <SelectItem value="Contacted">Contacted</SelectItem>
+              <SelectItem value="Qualified">Qualified</SelectItem>
+              <SelectItem value="Proposal">Proposal</SelectItem>
               <SelectItem value="Converted">Converted</SelectItem>
               <SelectItem value="Lost">Lost</SelectItem>
             </SelectContent>

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ApiProvider } from './contexts/ApiContext';
+import { Toaster } from './components/ui/sonner';
 
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -15,6 +16,7 @@ import PrivateRoute from './components/PrivateRoute';
 const App = () => {
   return (
     <ApiProvider>
+      <Toaster />
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />

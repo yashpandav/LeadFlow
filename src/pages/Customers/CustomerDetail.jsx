@@ -84,9 +84,6 @@ const CustomerDetail = () => {
                 <SelectItem value="all">All</SelectItem>
                 <SelectItem value="New">New</SelectItem>
                 <SelectItem value="Contacted">Contacted</SelectItem>
-                <SelectItem value="Qualified">Qualified</SelectItem>
-                <SelectItem value="Proposal">Proposal</SelectItem>
-                <SelectItem value="Converted">Converted</SelectItem>
                 <SelectItem value="Lost">Lost</SelectItem>
               </SelectContent>
             </Select>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addLead, updateLead } from '../../store/features/leads/leadSlice';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 const LeadForm = ({ lead, customerId, onSave, customers = [] }) => {
   const [title, setTitle] = useState('');
-  const [selectedCustomerId, setSelectedCustomerId] = useState(customerId || (lead ? lead.customer._id : ''));
+  const [selectedCustomerId, setSelectedCustomerId] = useState(customerId || (lead ? lead.customerId._id : ''));
   const [status, setStatus] = useState('New');
   const [value, setValue] = useState('');
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const LeadForm = ({ lead, customerId, onSave, customers = [] }) => {
       setTitle(lead.title);
       setStatus(lead.status);
       setValue(lead.value);
-      setSelectedCustomerId(lead.customer._id);
+      setSelectedCustomerId(lead.customerId._id);
     }
   }, [lead]);
 
@@ -68,8 +68,6 @@ const LeadForm = ({ lead, customerId, onSave, customers = [] }) => {
           <SelectContent>
             <SelectItem value="New">New</SelectItem>
             <SelectItem value="Contacted">Contacted</SelectItem>
-            <SelectItem value="Qualified">Qualified</SelectItem>
-            <SelectItem value="Proposal">Proposal</SelectItem>
             <SelectItem value="Converted">Converted</SelectItem>
             <SelectItem value="Lost">Lost</SelectItem>
           </SelectContent>

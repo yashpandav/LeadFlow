@@ -1,4 +1,5 @@
 const Customer = require('../models/customer');
+const Lead = require('../models/lead');
 const yup = require('yup');
 
 // customer schema
@@ -24,7 +25,7 @@ exports.addCustomer = async (req, res) => {
       ownerId: req.user.id, 
     });
 
-    res.status(201).json({ success: true, data: customer });
+    res.status(201).json({ success: true, data: customer, message: 'Customer added successfully' });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({ success: false, message: error.message });
@@ -80,7 +81,7 @@ exports.updateCustomer = async (req, res) => {
       runValidators: true,
     });
 
-    res.status(200).json({ success: true, data: customer });
+    res.status(200).json({ success: true, data: customer, message: 'Customer updated successfully' });
   } catch (error) {
     if (error.name === 'ValidationError') {
       return res.status(400).json({ success: false, message: error.message });
@@ -101,9 +102,12 @@ exports.deleteCustomer = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Customer not found' });
     }
 
-    await customer.remove();
+    // Also delete all leads associated with this customer
+    await Lead.deleteMany({ customerId: req.params.id });
 
-    res.status(200).json({ success: true, data: {} });
+    await customer.deleteOne();
+
+    res.status(200).json({ success: true, data: {}, message: 'Customer deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });
   }

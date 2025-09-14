@@ -3,10 +3,10 @@ import api from '../../../services/api';
 
 export const fetchAllLeads = createAsyncThunk(
   'leads/fetchAllLeads',
-  async (_, { rejectWithValue }) => {
+  async (page = 1, { rejectWithValue }) => {
     try {
-      const response = await api.get('/leads');
-      return response.data.data;
+      const response = await api.get('/leads', { params: { page, limit: 10 } });
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -67,6 +67,8 @@ const leadSlice = createSlice({
     leads: [],
     loading: false,
     error: null,
+    totalPages: 1,
+    currentPage: 1,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -77,7 +79,9 @@ const leadSlice = createSlice({
       })
       .addCase(fetchAllLeads.fulfilled, (state, action) => {
         state.loading = false;
-        state.leads = action.payload;
+        state.leads = action.payload.data;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
       })
       .addCase(fetchAllLeads.rejected, (state, action) => {
         state.loading = false;

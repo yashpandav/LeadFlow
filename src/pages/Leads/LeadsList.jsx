@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import LeadForm from './LeadForm';
 import LeadCard from '../../components/ui/LeadCard';
+import Pagination from '../../components/ui/Pagination';
 
 const LeadsList = () => {
   const dispatch = useDispatch();
@@ -36,6 +37,10 @@ const LeadsList = () => {
     setEditingLead(null);
   };
 
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   const filteredLeads = leads
     .filter(
       (lead) =>
@@ -53,7 +58,7 @@ const LeadsList = () => {
   }
 
   return (
-    <main className="p-8 bg-gray-50">
+    <main className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Leads</h1>
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
@@ -83,27 +88,25 @@ const LeadsList = () => {
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="New">New</SelectItem>
             <SelectItem value="Contacted">Contacted</SelectItem>
-            <SelectItem value="Qualified">Qualified</SelectItem>
-            <SelectItem value="Proposal">Proposal</SelectItem>
             <SelectItem value="Converted">Converted</SelectItem>
             <SelectItem value="Lost">Lost</SelectItem>
           </SelectContent>
         </Select>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredLeads.map((lead) => (
           <LeadCard key={lead._id} lead={lead} onEdit={handleEdit} onDelete={handleDelete} />
         ))}
       </div>
-      <div className="flex justify-center mt-8">
-        <Button onClick={() => setPage(page - 1)} disabled={page <= 1}>
-          Previous
-        </Button>
-        <span className="mx-4">Page {currentPage} of {totalPages}</span>
-        <Button onClick={() => setPage(page + 1)} disabled={page >= totalPages}>
-          Next
-        </Button>
-      </div>
+      {totalPages > 1 && (
+        <div className="mt-8">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
     </main>
   );
 };
