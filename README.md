@@ -93,7 +93,6 @@ This project demonstrates backend, frontend, database, and integration expertise
 ---
 
 ## 🗂️ Project Structure
-# Project Structure Documentation
 
 ## Root Directory
 ```
@@ -233,7 +232,7 @@ This project follows a **full-stack React + Node.js architecture** with:
 - **Middleware pattern** for authentication and authorization
 
 
-# ⚙️ Project Setup – Mini CRM (MERN)
+# ⚙️ Project Setup
 
 This document explains how to set up and run the project locally.  
 The application is built using the **MERN stack**: MongoDB, Express, React, and Node.js.
