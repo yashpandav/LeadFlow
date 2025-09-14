@@ -16,21 +16,18 @@ This project demonstrates backend, frontend, database, and integration expertise
 
 ## 📸 Project Preview
 
-### Dashboard
-![Dashboard Screenshot](https://drive.google.com/file/d/1fbaJ648m27wdUOSHarjfabjuo-oQ2pkA/view?usp=sharing)
+![Dashboard Screenshot](https://github.com/yashpandav/LeadFlow/blob/main/public/Dashboard.png)
 
-### Customers 
-![Customers Screenshot](https://drive.google.com/open?id=1kK5CRg9HiVkgeZ7jE04E_hFD2bTEtyiR&usp=drive_copy)
-![Customers Screenshot](https://drive.google.com/open?id=1E-ceyBudqv8krgCfXQf62bRrz_CKM9f7&usp=drive_copy)
-![Customers Screenshot](https://drive.google.com/open?id=1P1Isp-FUcoCw_ZTkA6ECuJFwojMy5qlu&usp=drive_copy)
-![Customers Screenshot](https://drive.google.com/open?id=1geO_cOcrgurAm5eFRKcYPHo33qQpXzI7&usp=drive_copy)
+![Customer List](https://github.com/yashpandav/LeadFlow/blob/main/public/CustomerList.png)
+![Customer List 1](https://github.com/yashpandav/LeadFlow/blob/main/public/CustomerList1.png)
+![Customer List 2](https://github.com/yashpandav/LeadFlow/blob/main/public/CustomerList2.png)
+![Add Customer](https://github.com/yashpandav/LeadFlow/blob/main/public/AddCustomer.png)
 
-### Leads 
-![Lead Screenshot](https://drive.google.com/open?id=14HcZstfZjNr19xql7nN1OCm2YMV3GPGI&usp=drive_copy)
-![Lead Screenshot](https://drive.google.com/open?id=1wJL1cYxI9VwAx80HHW-762Q356UESPrI&usp=drive_copy)
+![Lead List](https://github.com/yashpandav/LeadFlow/blob/main/public/LeadList.png)
+![Lead Details](https://github.com/yashpandav/LeadFlow/blob/main/public/LeadDetails.png)
 
-### Report
-![Report Screenshot](https://drive.google.com/open?id=1b3oisD1GjXYCFGexG1HSXQvpM0AxXq5_&usp=drive_copy)
+![Report](https://github.com/yashpandav/LeadFlow/blob/main/public/Report.png)
+
 
 🎥 **Demo Video:** [Watch here](https://drive.google.com/open?id=1oXlP1TMBQBXHjqe9jkCUdSv9GlzH7GbK&usp=drive_copy)
 
