@@ -1,4 +1,4 @@
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../contexts/ApiContext";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
@@ -13,11 +13,11 @@ const Navbar = () => {
   const { user, logout } = useAuth();
 
   return (
-    <header className="flex items-center justify-between p-4 bg-white dark:bg-neutral-800 shadow-md">
+    <header className="flex items-center justify-end p-4 bg-white dark:bg-neutral-800 border-b border-neutral-200 dark:border-neutral-700">
       <div>
-        <h1 className="text-2xl font-bold">CRM</h1>
+        {/* Title can be dynamic based on the page */}
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mr-4">
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>

@@ -1,3 +1,4 @@
+
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useState, createContext, useContext } from "react";
@@ -15,7 +16,7 @@ export const useSidebar = () => {
   return context;
 };
 
-export const SidebarProvider = ({
+export const Sidebar = ({
   children,
   open: openProp,
   setOpen: setOpenProp,
@@ -30,19 +31,6 @@ export const SidebarProvider = ({
     <SidebarContext.Provider value={{ open, setOpen, animate: animate }}>
       {children}
     </SidebarContext.Provider>
-  );
-};
-
-export const Sidebar = ({
-  children,
-  open,
-  setOpen,
-  animate,
-}) => {
-  return (
-    <SidebarProvider open={open} setOpen={setOpen} animate={animate}>
-      {children}
-    </SidebarProvider>
   );
 };
 
@@ -65,7 +53,7 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden md:flex md:flex-col bg-violet-600 text-white w-[300px] shrink-0",
+          "h-full px-4 py-4 hidden md:flex md:flex-col bg-slate-800 text-white w-[300px] shrink-0",
           className
         )}
         animate={{
@@ -91,7 +79,7 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-violet-600 w-full"
+          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-slate-800 w-full"
         )}
         {...props}
       >
@@ -111,10 +99,7 @@ export const MobileSidebar = ({
                 duration: 0.3,
                 ease: "easeInOut",
               }}
-              className={cn(
-                "fixed h-full w-full inset-0 bg-violet-600 p-10 z-[100] flex flex-col justify-between",
-                className
-              )}
+              className={cn("fixed h-full w-full inset-0 bg-slate-800 p-10 z-[100] flex flex-col justify-between", className)}
             >
               <div
                 className="absolute right-10 top-10 z-50 text-white"
@@ -136,7 +121,7 @@ export const SidebarLink = ({
   className,
   ...props
 }) => {
-  const { open, animate } = useSidebar();
+  const { open } = useSidebar();
   const location = useLocation();
   const isActive = location.pathname === link.href;
 
@@ -144,8 +129,9 @@ export const SidebarLink = ({
     <Link
       to={link.href}
       className={cn(
-        "flex items-center justify-start gap-2 group/sidebar py-2 px-2 rounded-md",
-        isActive ? "bg-teal-500" : "",
+        "flex items-center group/sidebar py-2 px-2 rounded-md gap-2",
+        isActive ? "bg-primary text-white" : "text-white hover:bg-accent/80",
+        open ? "justify-start" : "justify-center",
         className
       )}
       {...props}
@@ -153,13 +139,42 @@ export const SidebarLink = ({
       {link.icon}
       <motion.span
         animate={{
-          display: animate ? (open ? "inline-block" : "none") : "inline-block",
-          opacity: animate ? (open ? 1 : 0) : 1,
+          display: open ? "inline-block" : "none",
+          opacity: open ? 1 : 0,
         }}
         className="text-white text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
       >
         {link.label}
       </motion.span>
+    </Link>
+  );
+};
+
+export const Logo = () => {
+  return (
+    <Link
+      href="#"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm" />
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="font-medium text-white dark:text-white whitespace-pre"
+      >
+        Aceternity
+      </motion.span>
+    </Link>
+  );
+};
+
+export const LogoIcon = () => {
+  return (
+    <Link
+      href="#"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+    >
+      <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm" />
     </Link>
   );
 };
