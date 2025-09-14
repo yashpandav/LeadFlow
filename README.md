@@ -233,7 +233,6 @@ This project follows a **full-stack React + Node.js architecture** with:
 
 ## Schema
 
-```
 erDiagram
     User {
         ObjectId _id PK
@@ -267,7 +266,7 @@ erDiagram
     
     User ||--o{ Customer : owns
     Customer ||--o{ Lead : generates
-```
+
 
 # ⚙️ Project Setup
 
