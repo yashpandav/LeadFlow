@@ -1,31 +1,62 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { fetchCustomers, deleteCustomer } from '../../store/features/customer/customerSlice';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import CustomerForm from './CustomerForm';
-import LeadForm from '../Leads/LeadForm';
-import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  fetchCustomers,
+  deleteCustomer,
+} from "../../store/features/customer/customerSlice";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, PlusCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import CustomerForm from "./CustomerForm";
+import LeadForm from "../Leads/LeadForm";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import Pagination from "../../components/ui/Pagination";
 
 const CustomersList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { customers, loading, error } = useSelector((state) => state.customers);
+  const { customers, pagination, loading, error } = useSelector(
+    (state) => state.customers
+  );
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
+
   const [isCustomerFormOpen, setIsCustomerFormOpen] = useState(false);
   const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchCustomers());
+    dispatch(fetchCustomers({ page: 1, limit: 10 }));
   }, [dispatch]);
+
+  const handlePageChange = (page) => {
+    dispatch(fetchCustomers({ page, limit: 10 }));
+  };
 
   const handleDelete = (id) => {
     dispatch(deleteCustomer(id));
@@ -78,9 +109,14 @@ const CustomersList = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{editingCustomer ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
+              <DialogTitle>
+                {editingCustomer ? "Edit Customer" : "Add Customer"}
+              </DialogTitle>
             </DialogHeader>
-            <CustomerForm customer={editingCustomer} onSave={handleCustomerFormSave} />
+            <CustomerForm
+              customer={editingCustomer}
+              onSave={handleCustomerFormSave}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -106,16 +142,21 @@ const CustomersList = () => {
           <TableBody>
             {filteredCustomers.length > 0 ? (
               filteredCustomers.map((customer) => (
-                <TableRow 
-                  key={customer._id} 
+                <TableRow
+                  key={customer._id}
                   onClick={() => handleRowClick(customer._id)}
                   className="cursor-pointer hover:bg-gray-50"
                 >
                   <TableCell className="font-medium">{customer.name}</TableCell>
                   <TableCell>{customer.email}</TableCell>
                   <TableCell>{customer.phone}</TableCell>
-                  <TableCell className="text-center">{customer.totalLeads}</TableCell>
-                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                  <TableCell className="text-center">
+                    {customer.totalLeads}
+                  </TableCell>
+                  <TableCell
+                    className="text-right"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -125,10 +166,14 @@ const CustomersList = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleRowClick(customer._id)}>
+                        <DropdownMenuItem
+                          onClick={() => handleRowClick(customer._id)}
+                        >
                           View Details
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => openAddLeadModal(customer._id)}>
+                        <DropdownMenuItem
+                          onClick={() => openAddLeadModal(customer._id)}
+                        >
                           Add Lead
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -140,7 +185,10 @@ const CustomersList = () => {
                           Edit Customer
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDelete(customer._id)} className="text-red-600">
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(customer._id)}
+                          className="text-red-600"
+                        >
                           Delete Customer
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -165,9 +213,18 @@ const CustomersList = () => {
           <DialogHeader>
             <DialogTitle>Add New Lead</DialogTitle>
           </DialogHeader>
-          <LeadForm customerId={selectedCustomerId} onSave={handleLeadFormSave} />
+          <LeadForm
+            customerId={selectedCustomerId}
+            onSave={handleLeadFormSave}
+          />
         </DialogContent>
       </Dialog>
+
+      <Pagination
+  currentPage={pagination.page}
+  totalPages={pagination.pages}
+  onPageChange={handlePageChange}
+      />
     </main>
   );
 };

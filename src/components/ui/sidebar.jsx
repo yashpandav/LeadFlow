@@ -53,11 +53,11 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "h-full px-4 py-4 hidden md:flex md:flex-col bg-slate-800 text-white w-[300px] shrink-0",
+          "h-full px-4 py-4 hidden md:flex md:flex-col bg-slate-800 text-white w-[320px] shrink-0 gap-4",
           className
         )}
         animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
+          width: animate ? (open ? "320px" : "80px") : "320px",
         }}
         onMouseEnter={() => setOpen(true)}
         onMouseLeave={() => setOpen(false)}
@@ -79,7 +79,7 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "h-10 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-slate-800 w-full"
+          "h-12 px-4 py-4 flex flex-row md:hidden items-center justify-between bg-slate-800 w-full"
         )}
         {...props}
       >
@@ -129,8 +129,8 @@ export const SidebarLink = ({
     <Link
       to={link.href}
       className={cn(
-        "flex items-center group/sidebar py-2 px-2 rounded-md gap-2",
-        isActive ? "bg-primary text-white" : "text-white hover:bg-accent/80",
+        "flex items-center group/sidebar py-2 px-4 rounded-md gap-2 mb-2",
+        isActive ? "bg-primary text-white" : "text-white hover:bg-slate-700",
         open ? "justify-start" : "justify-center",
         className
       )}
@@ -142,7 +142,7 @@ export const SidebarLink = ({
           display: open ? "inline-block" : "none",
           opacity: open ? 1 : 0,
         }}
-        className="text-white text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+        className="text-white text-base group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre"
       >
         {link.label}
       </motion.span>
@@ -154,7 +154,7 @@ export const Logo = () => {
   return (
     <Link
       href="#"
-      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
+      className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20 mb-4"
     >
       <div className="h-5 w-6 bg-black dark:bg-white rounded-br-lg rounded-tr-sm rounded-tl-lg rounded-bl-sm" />
       <motion.span

@@ -38,12 +38,18 @@ exports.addCustomer = async (req, res) => {
 // get all customers for the logged-in user
 exports.getCustomers = async (req, res) => {
   try {
-    const customers = await Customer.aggregate([
-      {
-        $match: {
-          ownerId: new mongoose.Types.ObjectId(req.user.id),
-        },
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const matchStage = {
+      $match: {
+        ownerId: new mongoose.Types.ObjectId(req.user.id),
       },
+    };
+
+    const customers = await Customer.aggregate([
+      matchStage,
       {
         $lookup: {
           from: 'leads',
@@ -62,13 +68,29 @@ exports.getCustomers = async (req, res) => {
           leads: 0,
         },
       },
+      { $skip: skip },
+      { $limit: limit },
     ]);
 
-    res.status(200).json({ success: true, data: customers });
+    // Get total count for pagination
+    const totalCustomers = await Customer.countDocuments({
+      ownerId: req.user.id,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: customers,
+      pagination: {
+        total: totalCustomers,
+        page,
+        pages: Math.ceil(totalCustomers / limit),
+      },
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
+
 
 // get a single customer by ID
 exports.getCustomerById = async (req, res) => {

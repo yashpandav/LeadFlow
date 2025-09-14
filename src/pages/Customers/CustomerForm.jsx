@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { addCustomer, updateCustomer } from '../../store/features/customer/customerSlice';
+import { addCustomer, updateCustomer, fetchCustomers } from '../../store/features/customer/customerSlice';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useSelector } from 'react-redux';
 
 const CustomerForm = ({ customer, onSave }) => {
   const [name, setName] = useState('');
@@ -10,6 +11,8 @@ const CustomerForm = ({ customer, onSave }) => {
   const [phone, setPhone] = useState('');
   const [company, setCompany] = useState('');
   const dispatch = useDispatch();
+  const { pagination } = useSelector((state) => state.customers);
+
 
   useEffect(() => {
     if (customer) {
@@ -20,14 +23,19 @@ const CustomerForm = ({ customer, onSave }) => {
     }
   }, [customer]);
 
-  const handleSubmit = (e) => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const customerData = { name, email, phone, company };
+    
     if (customer) {
-      dispatch(updateCustomer({ id: customer._id, customer: customerData }));
+      await dispatch(updateCustomer({ id: customer._id, customer: customerData }));
+      dispatch(fetchCustomers({ page: pagination.page, limit: 10 }));
     } else {
-      dispatch(addCustomer(customerData));
+      await dispatch(addCustomer(customerData));
+      dispatch(fetchCustomers({ page: pagination.page, limit: 10 }));
     }
+
     onSave();
   };
 

@@ -3,15 +3,16 @@ import api from "../../../services/api";
 
 export const fetchCustomers = createAsyncThunk(
   "customers/fetchCustomers",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
-      const response = await api.get("/customers");
-      return response.data.data;
+      const response = await api.get(`/customers?page=${page}&limit=${limit}`);
+      return response.data; // includes data + pagination
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
+
 
 export const addCustomer = createAsyncThunk(
   "customers/addCustomer",
@@ -53,6 +54,7 @@ const customerSlice = createSlice({
   name: "customers",
   initialState: {
     customers: [],
+    pagination: { total: 0, page: 1, pages: 1 },
     loading: false,
     error: null,
   },
@@ -65,14 +67,12 @@ const customerSlice = createSlice({
       })
       .addCase(fetchCustomers.fulfilled, (state, action) => {
         state.loading = false;
-        state.customers = action.payload;
+        state.customers = action.payload.data;
+        state.pagination = action.payload.pagination;
       })
       .addCase(fetchCustomers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message || "Failed to fetch customers";
-      })
-      .addCase(addCustomer.fulfilled, (state, action) => {
-        state.customers.push(action.payload);
       })
       .addCase(updateCustomer.fulfilled, (state, action) => {
         const index = state.customers.findIndex(
