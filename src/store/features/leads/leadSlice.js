@@ -17,7 +17,7 @@ export const fetchLeads = createAsyncThunk(
   'leads/fetchLeads',
   async (customerId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`/customers/${customerId}/leads`);
+      const response = await api.get(`/leads/${customerId}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -29,7 +29,7 @@ export const addLead = createAsyncThunk(
   'leads/addLead',
   async ({ customerId, lead }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`/customers/${customerId}/leads`, lead);
+      const response = await api.post('/leads', { ...lead, customerId });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

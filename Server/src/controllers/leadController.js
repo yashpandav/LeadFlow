@@ -5,17 +5,25 @@ const yup = require('yup');
 const leadSchema = yup.object().shape({
   title: yup.string().required(),
   description: yup.string(),
-  status: yup.string().oneOf(['New', 'Contacted', 'Converted', 'Lost']),
+  status: yup.string().oneOf(['New', 'Contacted', 'Qualified', 'Proposal', 'Converted', 'Lost']),
+  value: yup.number(),
+  customerId: yup.string().required(),
+});
+
+const updateLeadSchema = yup.object().shape({
+  title: yup.string(),
+  description: yup.string(),
+  status: yup.string().oneOf(['New', 'Contacted', 'Qualified', 'Proposal', 'Converted', 'Lost']),
   value: yup.number(),
 });
+
 
 // create a new lead for a customer
 exports.addLead = async (req, res) => {
   try {
     await leadSchema.validate(req.body);
 
-    const { title, description, status, value } = req.body;
-    const customerId = req.params.customerId;
+    const { title, description, status, value, customerId } = req.body;
 
     const customer = await Customer.findOne({
       _id: customerId,
@@ -36,7 +44,10 @@ exports.addLead = async (req, res) => {
       value,
     });
 
-    res.status(201).json({ success: true, data: lead });
+    const populatedLead = await Lead.findById(lead._id).populate('customerId', 'name');
+
+
+    res.status(201).json({ success: true, data: populatedLead });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -45,7 +56,7 @@ exports.addLead = async (req, res) => {
 // get all leads for a customer
 exports.getLeads = async (req, res) => {
   try {
-    const customerId = req.params.customerId;
+    const customerId = req.params.id;
 
     const customer = await Customer.findOne({
       _id: customerId,
@@ -97,14 +108,20 @@ exports.getAllLeads = async (req, res) => {
 // update a lead
 exports.updateLead = async (req, res) => {
   try {
-    await leadSchema.validate(req.body);
+    await updateLeadSchema.validate(req.body);
 
     const lead = await Lead.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
 
-    res.status(200).json({ success: true, data: lead });
+    if (!lead) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+
+    const populatedLead = await Lead.findById(lead._id).populate('customerId', 'name');
+
+    res.status(200).json({ success: true, data: populatedLead });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
@@ -113,7 +130,13 @@ exports.updateLead = async (req, res) => {
 // delete a lead
 exports.deleteLead = async (req, res) => {
   try {
-    await req.lead.remove();
+    const lead = await Lead.findById(req.params.id);
+
+    if (!lead) {
+      return res.status(404).json({ success: false, message: 'Lead not found' });
+    }
+    
+    await lead.remove();
 
     res.status(200).json({ success: true, data: {} });
   } catch (error) {

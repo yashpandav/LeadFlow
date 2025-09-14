@@ -1,33 +1,46 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllLeads, deleteLead } from '../../store/features/leads/leadSlice';
-import { Link } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MoreHorizontal } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import LeadForm from './LeadForm';
+import LeadCard from '../../components/ui/LeadCard';
 
 const LeadsList = () => {
   const dispatch = useDispatch();
-  const { leads, loading, error } = useSelector((state) => state.leads);
+  const { leads, loading, error, totalPages, currentPage } = useSelector((state) => state.leads);
+  const { customers } = useSelector((state) => state.customers);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState(null);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchAllLeads());
-  }, [dispatch]);
+    dispatch(fetchAllLeads(page));
+  }, [dispatch, page]);
 
   const handleDelete = (id) => {
     dispatch(deleteLead(id));
+  };
+
+  const handleEdit = (lead) => {
+    setEditingLead(lead);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSave = () => {
+    setIsFormOpen(false);
+    setEditingLead(null);
   };
 
   const filteredLeads = leads
     .filter(
       (lead) =>
         lead.title.toLowerCase().includes(search.toLowerCase()) ||
-        lead.customer.name.toLowerCase().includes(search.toLowerCase())
+        (lead.customerId && lead.customerId.name.toLowerCase().includes(search.toLowerCase()))
     )
     .filter((lead) => statusFilter === 'all' || lead.status === statusFilter);
 
@@ -43,6 +56,17 @@ const LeadsList = () => {
     <main className="p-8 bg-gray-50">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Leads</h1>
+        <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+          <DialogTrigger asChild>
+            <Button onClick={() => setEditingLead(null)}>Add Lead</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{editingLead ? 'Edit Lead' : 'Add Lead'}</DialogTitle>
+            </DialogHeader>
+            <LeadForm lead={editingLead} onSave={handleFormSave} customers={customers} />
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="flex justify-between items-center mb-4">
         <Input
@@ -66,44 +90,20 @@ const LeadsList = () => {
           </SelectContent>
         </Select>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Title</TableHead>
-            <TableHead>Customer</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Value</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredLeads.map((lead) => (
-            <TableRow key={lead._id}>
-              <TableCell>{lead.title}</TableCell>
-              <TableCell>{lead.customer.name}</TableCell>
-              <TableCell>{lead.status}</TableCell>
-              <TableCell>${lead.value}</TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <span className="sr-only">Open menu</span>
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <Link to={`/leads/${lead._id}`}>
-                      <DropdownMenuItem>View</DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleDelete(lead._id)}>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredLeads.map((lead) => (
+          <LeadCard key={lead._id} lead={lead} onEdit={handleEdit} onDelete={handleDelete} />
+        ))}
+      </div>
+      <div className="flex justify-center mt-8">
+        <Button onClick={() => setPage(page - 1)} disabled={page <= 1}>
+          Previous
+        </Button>
+        <span className="mx-4">Page {currentPage} of {totalPages}</span>
+        <Button onClick={() => setPage(page + 1)} disabled={page >= totalPages}>
+          Next
+        </Button>
+      </div>
     </main>
   );
 };
