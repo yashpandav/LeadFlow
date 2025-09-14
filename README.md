@@ -232,7 +232,7 @@ This project follows a **full-stack React + Node.js architecture** with:
 - **Middleware pattern** for authentication and authorization
 
 ## Schema
-
+```mermaid
 erDiagram
     User {
         ObjectId _id PK
@@ -266,7 +266,7 @@ erDiagram
     
     User ||--o{ Customer : owns
     Customer ||--o{ Lead : generates
-
+```
 
 # ⚙️ Project Setup
 
