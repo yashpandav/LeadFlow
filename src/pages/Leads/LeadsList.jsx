@@ -1,58 +1,43 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { MoreHorizontal } from "lucide-react";
-
-const leads = [
-  {
-    id: 1,
-    title: "Initial Inquiry",
-    customer: "John Doe",
-    status: "New",
-    value: 5000,
-  },
-  {
-    id: 2,
-    title: "Follow-up Call",
-    customer: "Jane Smith",
-    status: "Contacted",
-    value: 5000,
-  },
-];
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllLeads, deleteLead } from '../../store/features/leads/leadSlice';
+import { Link } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MoreHorizontal } from 'lucide-react';
 
 const LeadsList = () => {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const dispatch = useDispatch();
+  const { leads, loading, error } = useSelector((state) => state.leads);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  useEffect(() => {
+    dispatch(fetchAllLeads());
+  }, [dispatch]);
+
+  const handleDelete = (id) => {
+    dispatch(deleteLead(id));
+  };
 
   const filteredLeads = leads
     .filter(
       (lead) =>
         lead.title.toLowerCase().includes(search.toLowerCase()) ||
-        lead.customer.toLowerCase().includes(search.toLowerCase())
+        lead.customer.name.toLowerCase().includes(search.toLowerCase())
     )
-    .filter((lead) => statusFilter === "all" || lead.status === statusFilter);
+    .filter((lead) => statusFilter === 'all' || lead.status === statusFilter);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
 
   return (
     <main className="p-8 bg-gray-50">
@@ -74,6 +59,8 @@ const LeadsList = () => {
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="New">New</SelectItem>
             <SelectItem value="Contacted">Contacted</SelectItem>
+            <SelectItem value="Qualified">Qualified</SelectItem>
+            <SelectItem value="Proposal">Proposal</SelectItem>
             <SelectItem value="Converted">Converted</SelectItem>
             <SelectItem value="Lost">Lost</SelectItem>
           </SelectContent>
@@ -91,9 +78,9 @@ const LeadsList = () => {
         </TableHeader>
         <TableBody>
           {filteredLeads.map((lead) => (
-            <TableRow key={lead.id}>
+            <TableRow key={lead._id}>
               <TableCell>{lead.title}</TableCell>
-              <TableCell>{lead.customer}</TableCell>
+              <TableCell>{lead.customer.name}</TableCell>
               <TableCell>{lead.status}</TableCell>
               <TableCell>${lead.value}</TableCell>
               <TableCell>
@@ -105,11 +92,11 @@ const LeadsList = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <Link to={`/leads/${lead.id}`}>
+                    <Link to={`/leads/${lead._id}`}>
                       <DropdownMenuItem>View</DropdownMenuItem>
                     </Link>
                     <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDelete(lead._id)}>Delete</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>

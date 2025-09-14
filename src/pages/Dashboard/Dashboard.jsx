@@ -1,16 +1,27 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDashboardStats } from '../../store/features/dashboard/dashboardSlice';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { name: 'New', value: 400 },
-  { name: 'Contacted', value: 300 },
-  { name: 'Converted', value: 300 },
-  { name: 'Lost', value: 200 },
-];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const { stats, loading, error } = useSelector((state) => state.dashboard);
+
+  useEffect(() => {
+    dispatch(fetchDashboardStats());
+  }, [dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
+
   return (
     <main className="p-8 bg-gray-50">
       <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
@@ -20,7 +31,7 @@ const Dashboard = () => {
             <CardTitle>Total Customers</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">1,234</p>
+            <p className="text-4xl font-bold">{stats.totalCustomers}</p>
           </CardContent>
         </Card>
         <Card>
@@ -28,7 +39,7 @@ const Dashboard = () => {
             <CardTitle>Total Leads</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">5,678</p>
+            <p className="text-4xl font-bold">{stats.totalLeads}</p>
           </CardContent>
         </Card>
         <Card>
@@ -36,7 +47,23 @@ const Dashboard = () => {
             <CardTitle>Converted Leads</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">987</p>
+            <p className="text-4xl font-bold">{stats.convertedLeads}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>New Customers (Last 7 Days)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold">{stats.newCustomers}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>New Leads</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold">{stats.newLeads}</p>
           </CardContent>
         </Card>
       </div>
@@ -49,15 +76,16 @@ const Dashboard = () => {
             <ResponsiveContainer width="100%" height={400}>
               <PieChart>
                 <Pie
-                  data={data}
+                  data={stats.leadsByStatus}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
                   outerRadius={150}
                   fill="#8884d8"
                   dataKey="value"
+                  nameKey="name"
                 >
-                  {data.map((entry, index) => (
+                  {stats.leadsByStatus.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>

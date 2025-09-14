@@ -1,37 +1,60 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { addLead, updateLead } from '../../store/features/leads/leadSlice';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-const LeadForm = () => {
+const LeadForm = ({ lead, customerId, onSave }) => {
+  const [title, setTitle] = useState('');
+  const [status, setStatus] = useState('New');
+  const [value, setValue] = useState('');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (lead) {
+      setTitle(lead.title);
+      setStatus(lead.status);
+      setValue(lead.value);
+    }
+  }, [lead]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const leadData = { title, status, value: Number(value) };
+    if (lead) {
+      dispatch(updateLead({ id: lead._id, lead: leadData }));
+    } else {
+      dispatch(addLead({ customerId, lead: leadData }));
+    }
+    onSave();
+  };
+
   return (
-    <form className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label htmlFor="title">Title</Label>
-        <Input id="title" />
+        <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
       </div>
       <div>
-        <Label htmlFor="description">Description</Label>
-        <Textarea id="description" />
-      </div>
-      <div>
-        <Label htmlFor="status">Status</Label>
-        <Select>
+        <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
+        <Select onValueChange={setStatus} defaultValue={status}>
           <SelectTrigger>
-            <SelectValue placeholder="Select a status" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="New">New</SelectItem>
             <SelectItem value="Contacted">Contacted</SelectItem>
+            <SelectItem value="Qualified">Qualified</SelectItem>
+            <SelectItem value="Proposal">Proposal</SelectItem>
             <SelectItem value="Converted">Converted</SelectItem>
             <SelectItem value="Lost">Lost</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div>
-        <Label htmlFor="value">Value</Label>
-        <Input id="value" type="number" />
+        <label htmlFor="value" className="block text-sm font-medium text-gray-700">Value</label>
+        <Input id="value" type="number" value={value} onChange={(e) => setValue(e.target.value)} />
       </div>
       <Button type="submit">Save</Button>
     </form>

@@ -8,6 +8,7 @@ const helmet = require("helmet");
 const authRoutes = require('./src/routes/auth');
 const customerRoutes = require('./src/routes/customer');
 const leadRoutes = require('./src/routes/leads'); 
+const dashboardRoutes = require('./src/routes/dashboard');
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use(helmet());
 app.use('/api/auth', authRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/leads', leadRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 const PORT = process.env.PORT || 8080;
 

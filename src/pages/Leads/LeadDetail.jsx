@@ -1,32 +1,49 @@
-import { useParams } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
-const lead = {
-  id: 1,
-  title: "Initial Inquiry",
-  customer: "John Doe",
-  description: "Customer is interested in our services.",
-  status: "New",
-  value: 5000,
-  createdAt: "2023-10-27T10:00:00Z",
-};
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchLeads, updateLead } from '../../store/features/leads/leadSlice';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const LeadDetail = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
+  const { leads, loading, error } = useSelector((state) => state.leads);
+  const [status, setStatus] = useState('');
+
+  const lead = leads.find((l) => l._id === id);
+
+  useEffect(() => {
+    if (!lead) {
+      dispatch(fetchLeads());
+    }
+    if (lead) {
+      setStatus(lead.status);
+    }
+  }, [dispatch, lead]);
+
+  const handleUpdateStatus = () => {
+    dispatch(updateLead({ id, lead: { status } }));
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500">Error: {error}</div>;
+  }
+
+  if (!lead) {
+    return <div>Lead not found</div>;
+  }
 
   return (
     <main className="p-8 bg-gray-50">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">{lead.title}</h1>
-        <p className="text-lg text-gray-600">{lead.customer}</p>
+        <p className="text-lg text-gray-600">{lead.customer.name}</p>
       </div>
 
       <Card className="mb-8">
@@ -54,18 +71,20 @@ const LeadDetail = () => {
           <CardTitle>Update Status</CardTitle>
         </CardHeader>
         <CardContent className="flex items-center space-x-4">
-          <Select defaultValue={lead.status}>
+          <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select a status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="New">New</SelectItem>
-              <SelectItem value="Contacted">Contacted</SelectItem>
-              <SelectItem value="Converted">Converted</SelectItem>
-              <SelectItem value="Lost">Lost</SelectItem>
+                <SelectItem value="New">New</SelectItem>
+                <SelectItem value="Contacted">Contacted</SelectItem>
+                <SelectItem value="Qualified">Qualified</SelectItem>
+                <SelectItem value="Proposal">Proposal</SelectItem>
+                <SelectItem value="Converted">Converted</SelectItem>
+                <SelectItem value="Lost">Lost</SelectItem>
             </SelectContent>
           </Select>
-          <Button>Update</Button>
+          <Button onClick={handleUpdateStatus}>Update</Button>
         </CardContent>
       </Card>
     </main>
