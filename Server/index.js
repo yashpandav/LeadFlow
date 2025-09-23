@@ -19,8 +19,8 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: true,         
-    credentials: true,  
+    origin: 'https://lead-flow-theta.vercel.app',
+    credentials: true,
   })
 );
 
