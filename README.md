@@ -8,7 +8,7 @@ This project demonstrates backend, frontend, database, and integration expertise
 ## 🚀 Live Demo
 
 - **Frontend (Vercel)**: [https://lead-flow-es6ey03c6-yashpandavs-projects.vercel.app/](https://lead-flow-es6ey03c6-yashpandavs-projects.vercel.app/)  
-- **Backend API (Render/Heroku)**: [https://leadflow-cenq.onrender.com](https://leadflow-cenq.onrender.com)  
+- **Backend API (AWS)**: [https://leadflow-backend.publicvm.com](https://leadflow-backend.publicvm.com/)  
 
 🔑 **Test Credentials**  
 **Email**: `yash@pandav.com`
