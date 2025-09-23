@@ -7,7 +7,7 @@ This project demonstrates backend, frontend, database, and integration expertise
 
 ## 🚀 Live Demo
 
-- **Frontend (Vercel)**: [https://lead-flow-es6ey03c6-yashpandavs-projects.vercel.app/](https://lead-flow-es6ey03c6-yashpandavs-projects.vercel.app/)  
+- **Frontend (Vercel)**: [https://lead-flow-theta.vercel.app/](https://lead-flow-theta.vercel.app/)  
 - **Backend API (AWS)**: [https://leadflow-backend.publicvm.com](https://leadflow-backend.publicvm.com/)  
 
 🔑 **Test Credentials**  
